@@ -30,7 +30,7 @@ function App() {
   const validateStep = (currentStep) => {
     switch(currentStep) {
       case 1:
-        return character.description.trim().length > 0;
+        return character.description.trim().length > 10;
       case 2:
         return character.image !== null;
       case 3:
