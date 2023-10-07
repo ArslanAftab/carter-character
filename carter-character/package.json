@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@mantine/core": "^7.1.2",
+    "@mantine/dropzone": "^7.1.2",
     "@mantine/hooks": "^7.1.2",
     "@mantine/notifications": "^7.1.2",
     "@mantine/styles": "^6.0.21",
+    "@tabler/icons-react": "^2.38.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
