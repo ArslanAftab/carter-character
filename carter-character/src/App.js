@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Text, Button, Textarea, TextInput, Select, Group, rem, Image } from '@mantine/core';
-import { IconUpload, IconPhoto, IconX, IconZoomReplace } from '@tabler/icons-react';
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import ImageDrop from './components/ImageDrop';
+import { Container, Text, Button, Textarea, TextInput, Select } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 function App() {
@@ -28,36 +27,41 @@ function App() {
     setCharacter({ ...character, image: null });
   };
 
-  const renderDropzoneContent = () => {
-    if (character.image) {
-      return (
-        <Group direction="column" align="center" spacing="md">
-          <Image src={URL.createObjectURL(character.image)} width={100} height={100} fit="contain" />
-          <Button onClick={removeImage} leftSection={<IconZoomReplace />} color="red">
-            Replace Image
-          </Button>
-        </Group>
-      );
+  const validateStep = (currentStep) => {
+    switch(currentStep) {
+      case 1:
+        return character.description.trim().length > 0;
+      case 2:
+        return character.image !== null;
+      case 3:
+        return character.name.trim().length > 0;
+      case 4:
+        return character.gender.trim().length > 0;
+      case 5:
+        return character.age.trim().length > 0;
+      case 6:
+        return character.voice.trim().length > 0;
+      default:
+        return true;
     }
-
-    return (
-      <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
-        <Dropzone.Accept>
-          <IconUpload style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }} stroke={1.5} />
-        </Dropzone.Accept>
-        <Dropzone.Reject>
-          <IconX style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }} stroke={1.5} />
-        </Dropzone.Reject>
-        <Dropzone.Idle>
-          <IconPhoto style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }} stroke={1.5} />
-        </Dropzone.Idle>
-        <div>
-          <Text size="xl" inline>Drag images here or click to select files</Text>
-          <Text size="sm" c="dimmed" inline mt={7}>Upload your image here</Text>
-        </div>
-      </Group>
-    );
   };
+
+  const handleNextClick = () => {
+    if(validateStep(step)) {
+      if(step < 6) {
+        setStep(step + 1);
+      } else {
+        // TODO: Submit form or perform next action
+      }
+    } else {
+      notifications.show({
+        title: 'Incomplete step',
+        message: 'Please complete this step before moving on.',
+        color: 'red',
+      });
+    }
+  };
+
   const renderStep = () => {
     switch(step) {
       case 1:
@@ -70,16 +74,15 @@ function App() {
             minRows={4}
           />
         );
-      case 2:
-        return (
-          <Dropzone
-            onDrop={onDrop}
-            accept={IMAGE_MIME_TYPE}
-            maxSize={5 * 1024 ** 2}
-          >
-            {renderDropzoneContent()}
-          </Dropzone>
-        );
+        case 2:
+          return (
+            <ImageDrop 
+              image={character.image}
+              onDrop={onDrop}
+              onReplace={removeImage}
+            />
+          );
+  
       case 3:
         return (
           <TextInput 
@@ -136,13 +139,8 @@ function App() {
       </Button>
       <Button
         style={{ marginLeft: 10 }}
-        onClick={() => {
-          if(step < 6) {
-            setStep(step + 1);
-          } else {
-            // TODO: Submit form or perform next action
-          }
-        }}
+        onClick={handleNextClick}
+        disabled={!validateStep(step)} // disable the button if current step is not valid
       >
         {step < 6 ? 'Next' : 'Submit'}
       </Button>
