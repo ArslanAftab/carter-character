@@ -16,27 +16,34 @@ function App() {
   });
 
   const handleValueChange = (key, value) => {
-    setCharacter(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleNextClick = () => {
-    const currentStep = stepsConfig[step];
-    const validationResult = currentStep.validate(character[currentStep.key]);
+    // Validate the changed value
+    const validationResult = stepsConfig[step].validate(value);
     if (!validationResult.valid) {
       setErrorMessage(validationResult.message);
     } else {
       setErrorMessage('');
-      if(step < stepsConfig.length - 1) {
-        setStep(prev => prev + 1);
-      } else {
-        // Submit the form
-        console.log('Character Data:', character);
-        notifications.show({
-          title: 'Character created',
-          message: 'Your character has been successfully created!',
-          color: 'green',
-        });
-      }
+    }
+    setCharacter(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleNextClick = () => {
+    // Force validate the current step before proceeding
+    const validationResult = stepsConfig[step].validate(character[stepsConfig[step].key]);
+    if (!validationResult.valid) {
+      setErrorMessage(validationResult.message);
+      return; // If there's an error, don't proceed to the next step
+    }
+
+    if (step < stepsConfig.length - 1) {
+      setStep(prev => prev + 1);
+    } else {
+      // Submit the form
+      console.log('Character Data:', character);
+      notifications.show({
+        title: 'Character created',
+        message: 'Your character has been successfully created!',
+        color: 'green',
+      });
     }
   };
 
