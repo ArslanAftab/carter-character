@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { validateStep } from './validation/validation';
 import ImageDrop from './components/ImageDrop';
 import { Container, Text, Button, Textarea, TextInput, Select } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -27,40 +28,23 @@ function App() {
     setCharacter({ ...character, image: null });
   };
 
-  const validateStep = (currentStep) => {
-    switch(currentStep) {
-      case 1:
-        return character.description.trim().length > 10;
-      case 2:
-        return character.image !== null;
-      case 3:
-        return character.name.trim().length > 0;
-      case 4:
-        return character.gender.trim().length > 0;
-      case 5:
-        return character.age.trim().length > 0;
-      case 6:
-        return character.voice.trim().length > 0;
-      default:
-        return true;
-    }
-  };
-
   const handleNextClick = () => {
-    if(validateStep(step)) {
-      if(step < 6) {
-        setStep(step + 1);
-      } else {
-        // TODO: Submit form or perform next action
-      }
-    } else {
+    const validationResult = validateStep(step, character);
+    if (!validationResult.valid) {
       notifications.show({
-        title: 'Incomplete step',
-        message: 'Please complete this step before moving on.',
+        title: 'Validation error',
+        message: validationResult.message,
         color: 'red',
       });
+    } else {
+      if(step < 6) {
+        setStep(prevStep => prevStep + 1); // Go to the next step
+      } else {
+        // Submit the form or any other logic
+      }
     }
   };
+  
 
   const renderStep = () => {
     switch(step) {
@@ -140,8 +124,8 @@ function App() {
       <Button
         style={{ marginLeft: 10 }}
         onClick={handleNextClick}
-        disabled={!validateStep(step)} // disable the button if current step is not valid
-      >
+        disabled={!validateStep(step, character).valid}
+        >
         {step < 6 ? 'Next' : 'Submit'}
       </Button>
     </Container>
