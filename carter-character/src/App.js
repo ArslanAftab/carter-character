@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Text, Button, Textarea, TextInput, Select, Notification, Group, rem } from '@mantine/core';
+import { Container, Text, Button, Textarea, TextInput, Select, Group, rem } from '@mantine/core';
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useNotifications } from '@mantine/notifications';
