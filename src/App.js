@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { stepsConfig } from './stepsConfig';
 import { Container, Text, Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import axios from 'axios';
 
 function App() {
   const [step, setStep] = useState(0);
@@ -37,15 +38,38 @@ function App() {
     if (step < stepsConfig.length - 1) {
       setStep(prev => prev + 1);
     } else {
-      // Submit the form
-      console.log('Character Data:', character);
-      notifications.show({
-        title: 'Character created',
-        message: 'Your character has been successfully created!',
-        color: 'green',
-      });
-    }
-  };
+      // Convert the character data to FormData
+      const formData = new FormData();
+      for (let key in character) {
+        formData.append(key, character[key]);
+      }
+
+      // Submit the form using FormData
+      axios.post('http://localhost:8000/create-character/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+        .then(response => {
+          console.log('Response from server:', response.data);
+          notifications.show({
+            title: 'Character created',
+            message: 'Your character has been successfully created!',
+            color: 'green',
+          });
+        })
+        .catch(error => {
+          console.error('Error submitting character:', error);
+          console.error('Validation issues:', error.response.data);
+          notifications.show({
+            title: 'Error',
+            message: 'There was an error submitting your character. Please try again.',
+            color: 'red',
+          });
+        });
+    }    
+};
+
 
   const handlePrevClick = () => {
     if (step > 0) {
