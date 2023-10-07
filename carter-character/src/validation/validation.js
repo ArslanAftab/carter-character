@@ -1,14 +1,27 @@
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
 export const validateDescription = (description) => {
+    
     if (description.trim().length < 10) {
       return { valid: false, message: 'Description should be at least 10 characters.' };
     }
     return { valid: true, message: '' };
   };
-  
+
   export const validateImage = (image) => {
     if (!image) {
       return { valid: false, message: 'Please provide an image.' };
     }
+  
+    if (!ACCEPTED_IMAGE_MIME_TYPES.includes(image.type)) {
+      return { valid: false, message: 'Invalid image format. Accepts only JPEG, PNG, and GIF.' };
+    }
+  
+    if (image.size > MAX_IMAGE_SIZE) {
+      return { valid: false, message: 'Image size should be less than 5MB.' };
+    }
+  
     return { valid: true, message: '' };
   };
   
@@ -34,7 +47,7 @@ export const validateDescription = (description) => {
   };
   
   export const validateVoice = (voice) => {
-    if (voice.trim().length === 0) {
+    if (!voice) {
       return { valid: false, message: 'Voice selection is required.' };
     }
     return { valid: true, message: '' };

@@ -1,16 +1,21 @@
 import React from 'react';
-import { Group, Image, Button, rem, Text } from '@mantine/core';
+import { Group, Image, Button, rem, Text, Notification } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconUpload, IconPhoto, IconX, IconZoomReplace } from '@tabler/icons-react';
 
-const ImageDrop = ({ image, onDrop, onReplace }) => {
+const ImageDrop = ({ value: image, onChange, error }) => {
+  
+  const handleImageDrop = (files) => {
+    const [file] = files;
+    onChange(file); // pass the image file back up to the parent
+  };
 
   const renderDropzoneContent = () => {
     if (image) {
       return (
         <Group direction="column" align="center" spacing="md">
           <Image src={URL.createObjectURL(image)} width={100} height={100} fit="contain" />
-          <Button onClick={onReplace} leftSection={<IconZoomReplace />} color="red">
+          <Button onClick={() => onChange(null)} leftSection={<IconZoomReplace />} color="red">
             Replace Image
           </Button>
         </Group>
@@ -37,13 +42,16 @@ const ImageDrop = ({ image, onDrop, onReplace }) => {
   };
 
   return (
-    <Dropzone
-      onDrop={onDrop}
-      accept={IMAGE_MIME_TYPE}
-      maxSize={5 * 1024 ** 2}
-    >
-      {renderDropzoneContent()}
-    </Dropzone>
+    <div>
+      {error && <Notification color="red" style={{ marginBottom: 10 }}>{error}</Notification>}
+      <Dropzone
+        onDrop={handleImageDrop}
+        accept={IMAGE_MIME_TYPE}
+        maxSize={5 * 1024 ** 2}
+      >
+        {renderDropzoneContent()}
+      </Dropzone>
+    </div>
   );
 }
 

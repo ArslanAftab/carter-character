@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { validateStep } from './validation/validation';
-import ImageDrop from './components/ImageDrop';
-import { Container, Text, Button, Textarea, TextInput, Select } from '@mantine/core';
+import React, { useState } from 'react';
+import { stepsConfig } from './stepsConfig';
+import { Container, Text, Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 function App() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
   const [character, setCharacter] = useState({
     description: '',
     image: null,
@@ -15,119 +15,61 @@ function App() {
     voice: ''
   });
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    setCharacter({ ...character, image: file });
-    notifications.show({
-      title: 'Image uploaded',
-      message: 'Great! Your character has an image now.',
-    });
-  }, [character]);
-
-  const removeImage = () => {
-    setCharacter({ ...character, image: null });
+  const handleValueChange = (key, value) => {
+    setCharacter(prev => ({ ...prev, [key]: value }));
   };
 
   const handleNextClick = () => {
-    const validationResult = validateStep(step, character);
+    const currentStep = stepsConfig[step];
+    const validationResult = currentStep.validate(character[currentStep.key]);
     if (!validationResult.valid) {
-      notifications.show({
-        title: 'Validation error',
-        message: validationResult.message,
-        color: 'red',
-      });
+      setErrorMessage(validationResult.message);
     } else {
-      if(step < 6) {
-        setStep(prevStep => prevStep + 1); // Go to the next step
+      setErrorMessage('');
+      if(step < stepsConfig.length - 1) {
+        setStep(prev => prev + 1);
       } else {
-        // Submit the form or any other logic
+        // Submit the form
+        console.log('Character Data:', character);
+        notifications.show({
+          title: 'Character created',
+          message: 'Your character has been successfully created!',
+          color: 'green',
+        });
       }
     }
   };
-  
 
-  const renderStep = () => {
-    switch(step) {
-      case 1:
-        return (
-          <Textarea 
-            label="Describe your character" 
-            placeholder="Description" 
-            value={character.description} 
-            onChange={(event) => setCharacter({...character, description: event.target.value})} 
-            minRows={4}
-          />
-        );
-        case 2:
-          return (
-            <ImageDrop 
-              image={character.image}
-              onDrop={onDrop}
-              onReplace={removeImage}
-            />
-          );
-  
-      case 3:
-        return (
-          <TextInput 
-            label="Name" 
-            placeholder="Name" 
-            value={character.name} 
-            onChange={(event) => setCharacter({...character, name: event.target.value})}
-          />
-        );
-      case 4:
-        const genders = ['Male', 'Female', 'Other'];
-        return (
-          <Select 
-            label="Gender" 
-            data={genders} 
-            value={character.gender} 
-            onChange={(val) => setCharacter({...character, gender: val})}
-          />
-        );
-      case 5:
-        return (
-          <TextInput 
-            label="Age" 
-            type="number" 
-            placeholder="Age" 
-            value={character.age.toString()} // Convert number to string
-            onChange={(event) => setCharacter({...character, age: event.target.value})}
-          />
-        );
-      case 6:
-        const voices = ['Voice 1', 'Voice 2', 'Voice 3'];
-        return (
-          <Select 
-            label="Select Voice" 
-            data={voices} 
-            value={character.voice} 
-            onChange={(val) => setCharacter({...character, voice: val})}
-          />
-        );
-      default:
-        return null;
+  const handlePrevClick = () => {
+    if (step > 0) {
+      setStep(prev => prev - 1);
+      setErrorMessage(''); // Reset error message on navigating back
     }
   };
 
+  const CurrentStepComponent = stepsConfig[step].component;
+  
   return (
     <Container size={400} style={{ marginTop: 50 }}>
       <Text align="center" size="xl">
         Create your character <br/>
-        Step {step}: 
+        Step {step + 1}: 
       </Text>
-      {renderStep()}
-      <Button style={{ marginTop: 20 }} onClick={() => setStep(step - 1)} disabled={step === 1}>
-        Previous
-      </Button>
-      <Button
-        style={{ marginLeft: 10 }}
-        onClick={handleNextClick}
-        disabled={!validateStep(step, character).valid}
-        >
-        {step < 6 ? 'Next' : 'Submit'}
-      </Button>
+      <CurrentStepComponent
+        value={character[stepsConfig[step].key]}
+        onChange={(value) => handleValueChange(stepsConfig[step].key, value)}
+        error={errorMessage}
+      />
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
+        {step > 0 && (
+          <Button onClick={handlePrevClick}>
+            Back
+          </Button>
+        )}
+        <Button onClick={handleNextClick} color="blue">
+          {step === stepsConfig.length - 1 ? 'Submit' : 'Next'}
+        </Button>
+      </div>
     </Container>
   );
 }
