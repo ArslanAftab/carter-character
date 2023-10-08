@@ -1,1 +1,5 @@
+# Do not send uploaded images
 uploaded_images/
+
+# Do not track virtual env changes
+myenv/
