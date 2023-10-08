@@ -4,3 +4,7 @@ uploaded_images/
 # Do not track local dev changes
 myenv/
 /__pycache__
+
+# Do not track node modules
+node_modules/
+*.pack.old
