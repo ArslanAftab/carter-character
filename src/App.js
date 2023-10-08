@@ -1,6 +1,7 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import { stepsConfig } from './stepsConfig';
 import CharacterTile from './components/CharacterTile';
+import StepNavigationButtons from './components/StepNavigationButtons';
 import { Container, Text, Button, Progress, Transition } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
@@ -12,7 +13,7 @@ function App() {
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [completionData, setCompletionData] = useState(null);
-  const [uploadDir, setUploadDir] = useState('');
+  const TRANSITION_DURATION = 300;
 
   const [character, setCharacter] = useState({
     description: '',
@@ -22,17 +23,6 @@ function App() {
     age: '',
     voice: ''
   });
-
-  useEffect(() => {
-    // Fetch the config (like UPLOAD_DIR) from the backend
-    axios.get('http://localhost:8000/config/')
-        .then(response => {
-            setUploadDir(response.data.upload_dir);
-        })
-        .catch(error => {
-            console.error('Error fetching config:', error);
-        });
-  }, []);
 
   const handleValueChange = (key, value) => {
     // Validate the changed value
@@ -50,7 +40,7 @@ function App() {
     setTimeout(() => {
       setStep(newStep);
       setIsTransitioning(true);
-    }, 300);
+    }, TRANSITION_DURATION);
   };
 
   const handleNextClick = () => {
@@ -130,7 +120,7 @@ function App() {
       <Transition
         mounted={isTransitioning}
         transition="fade"
-        duration={300}
+        duration={TRANSITION_DURATION}
       >
         {(styles) => (
           <div style={styles}>
@@ -142,17 +132,13 @@ function App() {
           </div>
         )}
       </Transition>
+      <StepNavigationButtons 
+        step={step} 
+        onPrev={handlePrevClick} 
+        onNext={handleNextClick}
+        isLastStep={step === stepsConfig.length - 1}
+      />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
-        {step > 0 && (
-          <Button onClick={handlePrevClick}>
-            Back
-          </Button>
-        )}
-        <Button onClick={handleNextClick} color="blue">
-          {step === stepsConfig.length - 1 ? 'Submit' : 'Next'}
-        </Button>
-      </div>
     </Container>
   );
 }
