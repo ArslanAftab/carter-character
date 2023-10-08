@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { stepsConfig } from './stepsConfig';
-import { Container, Text, Button } from '@mantine/core';
+import { Container, Text, Button, Progress } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 
 function App() {
   const [step, setStep] = useState(0);
+  const progress = ((step + 1) / stepsConfig.length) * 100;
   const [errorMessage, setErrorMessage] = useState('');
   const [character, setCharacter] = useState({
     description: '',
@@ -86,6 +87,11 @@ function App() {
         Create your character <br/>
         Step {step + 1}: 
       </Text>
+      <Progress
+        style={{ margin: '20px 0' }}
+        value={progress}
+        size="xs"
+      />
       <CurrentStepComponent
         value={character[stepsConfig[step].key]}
         onChange={(value) => handleValueChange(stepsConfig[step].key, value)}
