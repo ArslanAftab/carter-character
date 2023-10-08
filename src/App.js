@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { stepsConfig } from './stepsConfig';
-import { Container, Text, Button, Progress } from '@mantine/core';
+import { Container, Text, Button, Progress, Transition } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 
@@ -8,6 +8,7 @@ function App() {
   const [step, setStep] = useState(0);
   const progress = ((step + 1) / stepsConfig.length) * 100;
   const [errorMessage, setErrorMessage] = useState('');
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const [character, setCharacter] = useState({
     description: '',
     image: null,
@@ -28,6 +29,14 @@ function App() {
     setCharacter(prev => ({ ...prev, [key]: value }));
   };
 
+  const changeStep = (newStep) => {
+    setIsTransitioning(false);
+    setTimeout(() => {
+      setStep(newStep);
+      setIsTransitioning(true);
+    }, 300);
+  };
+
   const handleNextClick = () => {
     // Force validate the current step before proceeding
     const validationResult = stepsConfig[step].validate(character[stepsConfig[step].key]);
@@ -37,7 +46,7 @@ function App() {
     }
 
     if (step < stepsConfig.length - 1) {
-      setStep(prev => prev + 1);
+      changeStep(prev => prev + 1);
     } else {
       // Convert the character data to FormData
       const formData = new FormData();
@@ -74,7 +83,7 @@ function App() {
 
   const handlePrevClick = () => {
     if (step > 0) {
-      setStep(prev => prev - 1);
+      changeStep(prev => prev - 1);
       setErrorMessage(''); // Reset error message on navigating back
     }
   };
@@ -92,11 +101,22 @@ function App() {
         value={progress}
         size="xs"
       />
-      <CurrentStepComponent
-        value={character[stepsConfig[step].key]}
-        onChange={(value) => handleValueChange(stepsConfig[step].key, value)}
-        error={errorMessage}
-      />
+      <Transition
+        mounted={isTransitioning}
+        transition="fade"
+        duration={300}
+      >
+        {(styles) => (
+          <div style={styles}>
+            <CurrentStepComponent
+              value={character[stepsConfig[step].key]}
+              onChange={(value) => handleValueChange(stepsConfig[step].key, value)}
+              error={errorMessage}
+            />
+          </div>
+        )}
+      </Transition>
+
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
         {step > 0 && (
           <Button onClick={handlePrevClick}>
