@@ -39,3 +39,5 @@ Open your browser and navigate to http://localhost:3000 to view the application.
 For more advanced topics on React, such as code splitting, analyzing bundle size, making a progressive web app, and more, refer to the [Create React App](https://create-react-app.dev/docs/getting-started/) documentation.
 
 For FastAPI documentation, you can refer to the official [FastAPI](https://fastapi.tiangolo.com) documentation.
+
+For MantineUI documentation, you can refer to the official [Mantine](https://mantine.dev) documentation
