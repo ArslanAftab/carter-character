@@ -1,13 +1,14 @@
-import { TextInput } from '@mantine/core';
+import { NumberInput } from '@mantine/core';
 
 function CharacterAge({ value, onChange, error }) {
   return (
-    <TextInput 
+    <NumberInput
       label="Age" 
-      placeholder="Age"
-      type="number"
+      placeholder="Enter age"
+      min={0}
+      max={10000}
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={onChange}
       error={error}
     />
   );
