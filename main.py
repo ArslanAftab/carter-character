@@ -29,9 +29,12 @@ async def create_character(
     image: UploadFile = File(...)
 ):
     
-    # Save the uploaded image to the directory
-    image_filename = os.path.join(UPLOAD_DIR, image.filename)
-    image_url = f"http://localhost:8000/{UPLOAD_DIR}/{image.filename}"
+    # Save the uploaded image to the directory with a unique name
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    unique_filename = f"{timestamp}_{image.filename}"
+    image_filename = os.path.join(UPLOAD_DIR, unique_filename)
+    image_url = f"http://localhost:8000/{UPLOAD_DIR}/{unique_filename}"
+
     with open(image_filename, "wb") as buffer:
         image_content = image.file.read()
         buffer.write(image_content)
