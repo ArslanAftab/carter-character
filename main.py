@@ -75,7 +75,7 @@ async def create_character(
         "message": "Character received!",
         "character_name": name,
         "image_status": "Image uploaded successfully",
-        "image_path": f"/{UPLOAD_DIR}/{image.filename}",  # Return a web-accessible path
+        "image_path": f"/{UPLOAD_DIR}/{unique_filename}",  # Return a web-accessible path
         "creation_time": creation_time
     }
 import os
