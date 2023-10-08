@@ -2,7 +2,7 @@ import React, { useState} from 'react';
 import { stepsConfig } from './stepsConfig';
 import CharacterTile from './components/CharacterTile';
 import StepNavigationButtons from './components/StepNavigationButtons';
-import { Container, Text, Button, Progress, Transition } from '@mantine/core';
+import { Container, Text, Progress, Transition } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 
