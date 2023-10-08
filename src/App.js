@@ -9,6 +9,8 @@ function App() {
   const progress = ((step + 1) / stepsConfig.length) * 100;
   const [errorMessage, setErrorMessage] = useState('');
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+  const [completionData, setCompletionData] = useState(null);
   const [character, setCharacter] = useState({
     description: '',
     image: null,
@@ -61,6 +63,8 @@ function App() {
         },
       })
         .then(response => {
+          setCompletionData(response.data);
+          setIsComplete(true);
           console.log('Response from server:', response.data);
           notifications.show({
             title: 'Character created',
@@ -90,6 +94,15 @@ function App() {
 
   const CurrentStepComponent = stepsConfig[step].component;
   
+  if (isComplete) {
+    return (
+      <Container size={400} style={{ marginTop: 50 }}>
+        <Text align="center" size="xl">Character Creation Complete!</Text>
+        <Text align="center" size="md">Status: {completionData.status}</Text>
+        <Text align="center" size="md">Message: {completionData.message}</Text>
+      </Container>
+    );
+  }
   return (
     <Container size={400} style={{ marginTop: 50 }}>
       <Text align="center" size="xl">

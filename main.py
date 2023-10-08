@@ -2,6 +2,7 @@ from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from PIL import Image
+from datetime import datetime
 
 app = FastAPI()
 
@@ -30,6 +31,9 @@ async def create_character(
     with Image.open(image_filename) as img:
         width, height = img.size
 
+    # Get current time
+    creation_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     # Extract and print image metadata
     image_metadata = {
         "Filename": image.filename,
@@ -38,8 +42,8 @@ async def create_character(
         "Dimensions": f"{width}x{height}"
     }
 
-    # Neatly print the received character data
-    print(f"Received Character Information:\n"
+    # Neatly print the received character data and creation time
+    print(f"Received Character Information at {creation_time}:\n"
           f"--------------------------\n"
           f"Name: {name}\n"
           f"Description: {description}\n"
@@ -54,7 +58,14 @@ async def create_character(
           f"\tDimensions: {image_metadata['Dimensions']}\n"
           f"--------------------------")
     
-    return {"status": "success", "message": "Character received!"}
+    return {
+        "status": "success",
+        "message": "Character received!",
+        "character_name": name,
+        "image_status": "Image uploaded successfully",
+        "image_dimensions": image_metadata['Dimensions'],
+        "creation_time": creation_time
+    }
 
 # Setup CORS to accept requests from your React app
 # TODO: Restrict access for deployment and secure endpoints
