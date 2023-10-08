@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { stepsConfig } from './stepsConfig';
+import CharacterTile from './components/CharacterTile';
 import { Container, Text, Button, Progress, Transition } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
@@ -11,6 +12,8 @@ function App() {
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [completionData, setCompletionData] = useState(null);
+  const [uploadDir, setUploadDir] = useState('');
+
   const [character, setCharacter] = useState({
     description: '',
     image: null,
@@ -19,6 +22,17 @@ function App() {
     age: '',
     voice: ''
   });
+
+  useEffect(() => {
+    // Fetch the config (like UPLOAD_DIR) from the backend
+    axios.get('http://localhost:8000/config/')
+        .then(response => {
+            setUploadDir(response.data.upload_dir);
+        })
+        .catch(error => {
+            console.error('Error fetching config:', error);
+        });
+  }, []);
 
   const handleValueChange = (key, value) => {
     // Validate the changed value
@@ -96,11 +110,10 @@ function App() {
   
   if (isComplete) {
     return (
-      <Container size={400} style={{ marginTop: 50 }}>
-        <Text align="center" size="xl">Character Creation Complete!</Text>
-        <Text align="center" size="md">Status: {completionData.status}</Text>
-        <Text align="center" size="md">Message: {completionData.message}</Text>
-      </Container>
+        <Container size={400} style={{ marginTop: 50 }}>
+            <Text align="center" size="xl">Character Creation Complete!</Text>
+            <CharacterTile character={character} imagePath={`http://localhost:8000${completionData.image_path}`} /> {/* <-- Modified this line */}
+        </Container>
     );
   }
   return (
