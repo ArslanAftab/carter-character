@@ -9,7 +9,7 @@ Python 3: Download and install [Python](https://www.python.org/downloads/).
 ## Setup
 1.  **Clone the repository**  
 `$ git clone git@github.com:ArslanAftab/carter-character.git`  
-`$ cd git@github.com:ArslanAftab/carter-character.git`   
+`$ cd carter-character`   
   
 2. **Install Node dependencies**  
 `$ npm install`
@@ -35,6 +35,27 @@ This will start the FastAPI server, usually on http://localhost:8000.
 `$ npm start`  
 Open your browser and navigate to http://localhost:3000 to view the application.  
 
+## Project Structure
+Files and directories worth exploring are shown below, these are the ones where work has been focused.
+```
+.
+├── main.py
+├── postcss.config.js
+├── requirements.txt
+├── src
+│   ├── App.js
+│   ├── components/
+│       ├── CharacterAge.js
+│       ├── ...
+│       └── StepNavigationButton.js
+│   ├── index.js
+│   ├── stepsConfig.js
+│   ├── theme.js
+│   └── validation/
+│       └── validation.js
+├── uploaded_images/
+└── .gitignore
+```
 ## More Information
 For more advanced topics on React, such as code splitting, analyzing bundle size, making a progressive web app, and more, refer to the [Create React App](https://create-react-app.dev/docs/getting-started/) documentation.
 
