@@ -27,6 +27,8 @@ Python 3: Download and install [Python](https://www.python.org/downloads/).
 `$ pip install -r requirements.txt`  
 
 ## Running the application(s)
+Remember that you **will need 2 terminal instances** to run the frontend/backend.
+
 1. **Start the FastAPI server**  
 `$ uvicorn main:app --reload`  
 This will start the FastAPI server, usually on http://localhost:8000.
