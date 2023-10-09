@@ -34,7 +34,7 @@ const ImageDrop = ({ value: image, onChange, error }) => {
           <IconPhoto style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }} stroke={1.5} />
         </Dropzone.Idle>
         <div>
-          <Text size="xl" inline>Drag images here or click to select files</Text>
+          <Text size="xl" inline>Drag image here or click to select files</Text>
           <Text size="sm" c="dimmed" inline mt={7}>Upload your image here</Text>
         </div>
       </Group>
