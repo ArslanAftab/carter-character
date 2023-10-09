@@ -19,7 +19,7 @@ Python 3: Download and install [Python](https://www.python.org/downloads/).
 
 4. **Start virtual environment**  
 *For Mac users*  
-`$ source myenv`  
+`$ source myenv/bin/activate`  
 *For Windows users*  
 `$ .\myenv\Scripts\activate`
 
