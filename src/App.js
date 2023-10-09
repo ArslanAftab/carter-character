@@ -6,6 +6,9 @@ import { Container, Text, Progress, Transition } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 
+// TODO: Introduct loading state, i.e. image being uploaded
+// or waiting on FastAPI response.
+
 function App() {
     // States for step navigation, character details and UI/UX feedback
   const [step, setStep] = useState(0);
