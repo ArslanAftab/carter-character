@@ -10,8 +10,10 @@ import { useMantineColorScheme } from '@mantine/core';
 import { IconSun, IconMoon } from '@tabler/icons-react';
 import theme from "./theme";
 
+// Create React root
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+// Component to toggle between dark and light theme
 function ThemeToggler() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
@@ -26,6 +28,7 @@ function ThemeToggler() {
   );
 }
 
+// Wrap app with necessary providers
 function Root() {
   return (
     <MantineProvider theme={theme}>
