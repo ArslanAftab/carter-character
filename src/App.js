@@ -7,6 +7,7 @@ import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 
 function App() {
+    // States for step navigation, character details and UI/UX feedback
   const [step, setStep] = useState(0);
   const progress = ((step + 1) / stepsConfig.length) * 100;
   const [errorMessage, setErrorMessage] = useState('');
@@ -15,6 +16,7 @@ function App() {
   const [completionData, setCompletionData] = useState(null);
   const TRANSITION_DURATION = 300;
 
+  // Ammend when form components change
   const [character, setCharacter] = useState({
     description: '',
     image: null,
@@ -24,8 +26,8 @@ function App() {
     voice: ''
   });
 
+  // Handler to update character attributes and validate them
   const handleValueChange = (key, value) => {
-    // Validate the changed value
     const validationResult = stepsConfig[step].validate(value);
     if (!validationResult.valid) {
       setErrorMessage(validationResult.message);
@@ -35,6 +37,7 @@ function App() {
     setCharacter(prev => ({ ...prev, [key]: value }));
   };
 
+  // Method to handle step changes with animated transition
   const changeStep = (newStep) => {
     setIsTransitioning(false);
     setTimeout(() => {
@@ -43,6 +46,7 @@ function App() {
     }, TRANSITION_DURATION);
   };
 
+  // Handler to move to next step or submit character
   const handleNextClick = () => {
     // Force validate the current step before proceeding
     const validationResult = stepsConfig[step].validate(character[stepsConfig[step].key]);
@@ -54,18 +58,19 @@ function App() {
     if (step < stepsConfig.length - 1) {
       changeStep(prev => prev + 1);
     } else {
-      // Convert the character data to FormData
+      // Convert the character data to FormData before sending
       const formData = new FormData();
       for (let key in character) {
         formData.append(key, character[key]);
       }
 
-      // Submit the form using FormData
+      // Submit the form using FormData using POST
       axios.post('http://localhost:8000/create-character/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
+        // Case 1: Server creates character
         .then(response => {
           setCompletionData(response.data);
           setIsComplete(true);
@@ -76,6 +81,7 @@ function App() {
             color: 'green',
           });
         })
+        // Case 2 (error): Error creating character
         .catch(error => {
           console.error('Error submitting character:', error);
           console.error('Validation issues:', error.response.data);
@@ -88,7 +94,7 @@ function App() {
     }    
 };
 
-
+  // Handler to move to previous step
   const handlePrevClick = () => {
     if (step > 0) {
       changeStep(prev => prev - 1);
@@ -96,8 +102,11 @@ function App() {
     }
   };
 
+
+  // Creation steps defined in 'src/stepsConfig.js'
   const CurrentStepComponent = stepsConfig[step].component;
   
+  // Render logic
   if (isComplete) {
     return (
         <Container size={400} style={{ marginTop: 50 }}>
