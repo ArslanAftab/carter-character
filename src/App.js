@@ -65,6 +65,7 @@ function App() {
       }
 
       // Submit the form using FormData using POST
+      // TODO: Save URL to environment variables instead of hardcode.
       axios.post('http://localhost:8000/create-character/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

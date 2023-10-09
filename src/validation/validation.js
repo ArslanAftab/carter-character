@@ -9,6 +9,9 @@ const MIN_AGE = 0;
 const MAX_AGE = 10000;
 const ACCEPTED_VOICES = ['Soprano', 'Alto', 'Tenor', 'Bass'];
 
+// TODO: Ensure that DB contains list of options (MIME, gender, voice)
+// in order to ensure that frontend/validation methods are consistent!
+
 export const validateDescription = (description) => {
   if (description.trim().length < MIN_DESCRIPTION_LENGTH) {
     return { valid: false, message: `Description should be at least ${MIN_DESCRIPTION_LENGTH} characters.` };
@@ -78,7 +81,8 @@ export const validateVoice = (voice) => {
   return { valid: true, message: '' };
 };
 
-
+// TODO: Currently unused, but can be extended to work with '/src/stepsConfig.js'
+// I.e. Parse stepsConfig.js to take form elements and validate with defined criteria
 export const validateStep = (currentStep, character) => {
   switch (currentStep) {
     case 1:
