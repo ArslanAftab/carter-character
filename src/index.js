@@ -6,12 +6,13 @@ import '@mantine/dropzone/styles.css';
 import App from "./App";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import theme from "./theme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <MantineProvider theme={{ colorScheme: "light" }}>
+    <MantineProvider theme={theme}>
       <Notifications />
         <App />
     </MantineProvider>
